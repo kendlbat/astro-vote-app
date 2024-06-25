@@ -1,5 +1,5 @@
 import { defineConfig } from "auth-astro";
-import Entra from "@auth/core/providers/microsoft-entra-id";
+import Entra from "@auth/core/providers/azure-ad";
 
 export default defineConfig({
     providers: [
