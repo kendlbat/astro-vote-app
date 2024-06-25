@@ -1,0 +1,45 @@
+{
+    "name": "astro-vote-app",
+    "type": "module",
+    "version": "0.0.1",
+    "scripts": {
+        "dev": "astro dev",
+        "start": "astro dev",
+        "build": "astro check && astro build",
+        "preview": "astro preview",
+        "astro": "astro"
+    },
+    "dependencies": {
+        "@astrojs/check": "^0.7.0",
+        "@astrojs/node": "^8.3.2",
+        "@astrojs/react": "^3.6.0",
+        "@astrojs/svelte": "^5.6.0",
+        "@astrojs/tailwind": "^5.1.0",
+        "@auth/core": "^0.32.0",
+        "@tanstack/react-query": "^5.45.1",
+        "@types/react-dom": "npm:types-react-dom@rc",
+        "astro": "^4.11.1",
+        "auth-astro": "^4.1.2",
+        "chart.js": "^4.4.3",
+        "cookie": "^0.6.0",
+        "lucia": "^3.2.0",
+        "material-icons": "^1.13.12",
+        "pg": "^8.12.0",
+        "react": "19.0.0-rc-c21bcd627b-20240624",
+        "react-chartjs-2": "^5.2.0",
+        "react-dom": "19.0.0-rc-c21bcd627b-20240624",
+        "tailwindcss": "^3.4.4",
+        "typescript": "^5.5.2",
+        "zod": "^3.23.8",
+        "zod-form-data": "^2.0.2"
+    },
+    "overrides": {
+        "@types/react": "npm:types-react@rc",
+        "@types/react-dom": "npm:types-react-dom@rc"
+    },
+    "devDependencies": {
+        "@tailwindcss/typography": "^0.5.13",
+        "@types/pg": "^8.11.6",
+        "@types/react": "npm:types-react@19.0.0-rc.1"
+    }
+}

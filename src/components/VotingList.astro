@@ -1,0 +1,61 @@
+---
+interface Props {
+    id: string;
+}
+
+import { db } from "../lib/db";
+
+const { id } = Astro.props;
+
+const votings = (await db.query("SELECT * FROM votings WHERE owner = $1", [id]))
+    .rows;
+---
+
+<table>
+    <thead>
+        <tr>
+            <th></th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Owner</th>
+            <th>Created At</th>
+        </tr>
+    </thead>
+    <tbody>
+        {
+            votings.map((voting) => (
+                <tr>
+                    <td>
+                        <div class="flex flex-row gap-2 pr-1">
+                            <a href={`/votings/${voting.id}`}>
+                                <span class="material-icons align-middle">
+                                    menu
+                                </span>
+                            </a>
+                            <a
+                                href="javascript:void(0)"
+                                onclick={
+                                    "fetch(`/votings/" +
+                                    voting.id +
+                                    "`, { method: 'DELETE' }).then(() => location.reload())"
+                                }
+                            >
+                                <span class="material-icons align-middle">
+                                    delete
+                                </span>
+                            </a>
+                        </div>
+                    </td>
+                    <td>{voting.title}</td>
+                    <td>
+                        {voting.description.length > 29
+                            ? voting.description.slice(29) + "..."
+                            : voting.description}
+                    </td>
+                    <td>{voting.owner}</td>
+                    <td>{new Date(voting.created_at).toISOString()}</td>
+                </tr>
+            ))
+        }
+    </tbody>
+</table>

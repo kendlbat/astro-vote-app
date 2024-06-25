@@ -1,0 +1,116 @@
+---
+interface Props {
+    title: string;
+    padding?: string;
+}
+
+import "../styles/global.css";
+import "material-icons/iconfont/material-icons.css";
+import { SignIn, SignOut } from "auth-astro/components";
+import { ViewTransitions } from "astro:transitions";
+const { title, padding = "8px" } = Astro.props;
+
+import { getSession } from "auth-astro/server";
+import Sidenav from "../components/nav/Sidenav.astro";
+import SidenavItem from "../components/nav/SidenavItem.astro";
+
+const session = await getSession(Astro.request);
+---
+
+<!doctype html>
+<html lang="en" class="dark">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="description" content="Astro description" />
+        <meta name="viewport" content="width=device-width" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="generator" content={Astro.generator} />
+        <title>{title}</title>
+        <ViewTransitions />
+    </head>
+    <body class="dark:text-white">
+        <div class="flex flex-col h-full flex-nowrap">
+            <div class="p-2 flex flex-row flex-nowrap bg-menu">
+                <h1 class="h1 flex-grow p-2 text-4xl">{title}</h1>
+                <div>
+                    {
+                        session ? (
+                            <SignOut
+                                class="btn variant-filled rounded p-1"
+                                title="Sign out"
+                            >
+                                <span
+                                    class="material-icons align-middle"
+                                    style={{
+                                        fontSize: "2em",
+                                    }}
+                                >
+                                    logout
+                                </span>
+                            </SignOut>
+                        ) : (
+                            <SignIn class="btn variant-filled rounded p-1">
+                                <span
+                                    class="material-icons mr-2"
+                                    style={{
+                                        fontSize: "2em",
+                                    }}
+                                >
+                                    login
+                                </span>{" "}
+                                Login
+                            </SignIn>
+                        )
+                    }
+                </div>
+            </div>
+            <div
+                class="flex flex-col md:flex-row-reverse flex-nowrap h-full w-full"
+            >
+                <div
+                    class="flex-grow h-full w-full"
+                    style={{
+                        padding,
+                    }}
+                >
+                    <main class="prose dark:prose-invert">
+                        <slot />
+                    </main>
+                </div>
+                <Sidenav>
+                    <SidenavItem icon="home" label="Home" path="/" />
+                    <SidenavItem icon="create" label="Create" path="/create" />
+                </Sidenav>
+            </div>
+            <style is:global>
+                :root {
+                    --accent: 136, 58, 234;
+                    --accent-light: 224, 204, 250;
+                    --accent-dark: 49, 10, 101;
+                    --accent-gradient: linear-gradient(
+                        45deg,
+                        rgb(var(--accent)),
+                        rgb(var(--accent-light)) 30%,
+                        white 60%
+                    );
+                }
+                html {
+                    font-family: system-ui, sans-serif;
+                    background: #13151a;
+                    background-size: 224px;
+                }
+                code {
+                    font-family:
+                        Menlo,
+                        Monaco,
+                        Lucida Console,
+                        Liberation Mono,
+                        DejaVu Sans Mono,
+                        Bitstream Vera Sans Mono,
+                        Courier New,
+                        monospace;
+                }
+            </style>
+        </div>
+    </body>
+</html>

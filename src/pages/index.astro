@@ -1,0 +1,16 @@
+---
+import VotingList from "../components/VotingList.astro";
+import Layout from "../layouts/Layout.astro";
+
+import { getSession } from "auth-astro/server";
+
+const session = await getSession(Astro.request);
+
+const userid = session?.user?.email;
+
+if (!userid) return Astro.redirect("/login");
+---
+
+<Layout title="Vote Dashboard">
+    <VotingList id={userid} />
+</Layout>

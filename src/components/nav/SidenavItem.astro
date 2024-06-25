@@ -1,0 +1,19 @@
+---
+interface Props {
+    path: string;
+    icon: string;
+    label: string;
+}
+
+const { path, icon, label } = Astro.props;
+---
+
+<a
+    href={path}
+    class={`hover:bg-primary-800 transition-all h-20 w-24 flex flex-col flex-nowrap align-middle text-center justify-center text-sm ${Astro.url.pathname == path && " bg-primary-600"}`}
+>
+    <svelte:fragment slot="lead">
+        <span class="material-icons text-center">{icon}</span>
+    </svelte:fragment>
+    <span>{label}</span>
+</a>

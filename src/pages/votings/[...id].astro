@@ -1,0 +1,51 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+import { db } from "../../lib/db";
+import { getSession } from "auth-astro/server";
+
+const { id } = Astro.params;
+
+const session = await getSession(Astro.request);
+const userid = session?.user?.email;
+
+if (!userid) return Astro.redirect("/login");
+
+const voting = (await db.query("SELECT * FROM votings WHERE id = $1", [id]))
+    .rows[0];
+
+import { VotingView } from "../../components/VotingView";
+
+if (!voting) return Astro.redirect("/");
+
+if (voting.owner !== userid) return Astro.redirect("/");
+
+const options = (
+    await db.query("SELECT * FROM options WHERE voting_id = $1", [id])
+).rows;
+
+if (Astro.request.method === "DELETE") {
+    try {
+        await db.query("BEGIN");
+        await db.query("DELETE FROM options WHERE voting_id = $1", [id]);
+        await db.query("DELETE FROM votings WHERE id = $1", [id]);
+        await db.query("COMMIT");
+    } catch (error) {
+        await db.query("ROLLBACK");
+        throw error;
+    }
+}
+---
+
+<Layout title="Results">
+    <h1 class="mb-1">{voting.title}</h1>
+    <button
+        type="submit"
+        onclick="fetch(`/votings/{{id}}`, { method: 'DELETE' }).then(() => location.href = '/')"
+    >
+        <span class="material-icons">delete</span>
+    </button>
+    <p>{voting.description}</p>
+    <VotingView id={voting.id} client:load />
+</Layout>;
+

@@ -1,0 +1,142 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+import { getSession } from "auth-astro/server";
+
+import { db } from "../lib/db";
+
+import { ZodError, z } from "zod";
+import { zfd } from "zod-form-data";
+import { OptionsContainer } from "../components/OptionsContainer";
+
+const session = await getSession(Astro.request);
+
+if (!session) return Astro.redirect("/login");
+
+async function postLogic() {
+    // Validate form using zod
+
+    const id = session?.user?.email;
+
+    if (!id)
+        return new Response("You must be logged in to create a voting", {
+            status: 401,
+        });
+
+    const formSchema = zfd.formData({
+        title: z.string().min(3),
+        description: z.string().optional(),
+        options: z.array(z.string().min(1)).min(2),
+    });
+
+    const fd = await Astro.request.formData();
+
+    try {
+        await db.query("BEGIN");
+        const data = formSchema.parse(fd);
+
+        let res = await db.query(
+            "INSERT INTO votings (title, description, owner) VALUES ($1, $2, $3) RETURNING id",
+            [data.title, data.description || "", id]
+        );
+
+        if (!res || res.rowCount === 0 || !res.rows[0].id) {
+            return new Response("Failed to create voting", { status: 500 });
+        }
+
+        const votingId = res.rows[0].id;
+
+        const options = data.options.map((option: string) => [
+            option,
+            votingId,
+        ]);
+
+        res = await db.query(
+            "INSERT INTO options (option, voting_id) VALUES " +
+                options
+                    .map((_, i) => `($${i * 2 + 1}, $${i * 2 + 2})`)
+                    .join(", "),
+            options.flat()
+        );
+
+        // Return result as json
+        await db.query("COMMIT");
+        return Astro.redirect(`/votings/${votingId}`);
+    } catch (e: any) {
+        await db.query("ROLLBACK");
+        throw e;
+    }
+}
+
+let err;
+
+if (Astro.request.method === "POST") {
+    try {
+        return await postLogic();
+    } catch (e: any) {
+        if (e instanceof ZodError) {
+            err = e.errors.reduce((acc, err) => acc + `${err.message}\n`, "");
+        } else {
+            err = e;
+        }
+    }
+}
+
+const PLACEHOLDERS = [
+    "Do you like pineapple on pizza?",
+    "Is the earth flat?",
+    "Is water wet?",
+];
+const placeholder =
+    PLACEHOLDERS[Math.floor(Math.random() * PLACEHOLDERS.length)];
+---
+
+<Layout title="Vote Dashboard">
+    {
+        err && (
+            <div class="bg-red-600 rounded w-full sm:w-1/2 p-1 mb-3">
+                {err.message || err}
+            </div>
+        )
+    }
+    <form class="[&>div]:pb-3" method="POST">
+        <div>
+            <div class="flex gap-2">
+                <label>Title</label>
+            </div>
+            <input
+                type="text"
+                name="title"
+                minlength="3"
+                id="title"
+                placeholder={placeholder}
+            />
+        </div>
+        <div>
+            <div class="flex gap-2">
+                <label>Description</label>
+                <button type="button" id="description-clear-btn">
+                    <span class="material-icons">clear</span>
+                </button>
+            </div>
+            <textarea name="description" id="description"></textarea>
+        </div>
+        <div>
+            <OptionsContainer client:visible />
+        </div>
+        <button class="btn">Submit</button>
+    </form>
+    <script is:inline>
+        document
+            .querySelector("#description-clear-btn")
+            .addEventListener("click", () => {
+                document.querySelector("#description").value = "";
+            });
+    </script>
+    <style>
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</Layout>
