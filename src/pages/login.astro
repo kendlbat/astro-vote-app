@@ -7,12 +7,17 @@ import { SignIn } from "auth-astro/components";
 <html>
     <body>
         <button id="login">Login</button>
+        <input type="hidden" id="returnUrl" value={returnUrl} />
 
         <script>
             const { signIn, signOut } = await import("auth-astro/client");
-            document
-                .querySelector("body")!!
-                .addEventListener("click", () => signIn("azure-ad"));
+            document.querySelector("body")!!.addEventListener("click", () =>
+                signIn("azure-ad", {
+                    callbackUrl:
+                        // @ts-ignore
+                        document.querySelector("#returnUrl")?.value || "/",
+                })
+            );
         </script>
     </body>
 </html>
