@@ -21,6 +21,11 @@ import { SignIn } from "auth-astro/components";
                         )?.value || "/",
                 })
             );
+            signIn("azure-ad", {
+                callbackUrl:
+                    (document.querySelector("#returnUrl") as HTMLInputElement)
+                        ?.value || "/",
+            });
         </script>
     </body>
 </html>
