@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS votes (
     id SERIAL PRIMARY KEY,
     option_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT NOW(),
-    user TEXT NOT NULL,
-    FOREIGN KEY (option_id) REFERENCES options(id) ON DELETE CASCADE
+    owner TEXT NOT NULL,
+    FOREIGN KEY (option_id) REFERENCES options(id) ON DELETE CASCADE,
+    CONSTRAINT unique_vote UNIQUE (owner, option_id)
 );

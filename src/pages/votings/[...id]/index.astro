@@ -1,8 +1,9 @@
 ---
-import Layout from "../../layouts/Layout.astro";
+import Layout from "../../../layouts/Layout.astro";
 
-import { db } from "../../lib/db";
+import { db } from "../../../lib/db";
 import { getSession } from "auth-astro/server";
+import QRCode from "qrcode.react";
 
 const { id } = Astro.params;
 
@@ -14,7 +15,7 @@ if (!userid) return Astro.redirect("/login");
 const voting = (await db.query("SELECT * FROM votings WHERE id = $1", [id]))
     .rows[0];
 
-import { VotingView } from "../../components/VotingView";
+import { VotingView } from "../../../components/VotingView";
 
 if (!voting) return Astro.redirect("/");
 
@@ -35,10 +36,18 @@ if (Astro.request.method === "DELETE") {
         throw error;
     }
 }
+
+let fullUrl = Astro.url.toString() + "/vote";
 ---
 
 <Layout title="Results">
     <h1 class="mb-1">{voting.title}</h1>
+    <div
+        class="p-1 bg-white w-min"
+        onclick="window.location.href = window.location.href + '/vote'"
+    >
+        <QRCode client:only="react" value={fullUrl} />
+    </div>
     <button
         type="submit"
         onclick="fetch(`/votings/{{id}}`, { method: 'DELETE' }).then(() => location.href = '/')"

@@ -25,6 +25,7 @@
         "lucia": "^3.2.0",
         "material-icons": "^1.13.12",
         "pg": "^8.12.0",
+        "qrcode.react": "^3.1.0",
         "react": "19.0.0-rc-c21bcd627b-20240624",
         "react-chartjs-2": "^5.2.0",
         "react-dom": "19.0.0-rc-c21bcd627b-20240624",
