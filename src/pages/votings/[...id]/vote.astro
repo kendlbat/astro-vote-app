@@ -9,7 +9,8 @@ import { z } from "zod";
 const session = await getSession(Astro.request);
 const { id } = Astro.params;
 
-if (!session?.user?.email) return Astro.redirect("/login");
+if (!session?.user?.email)
+    return Astro.redirect(`/login?r=${Astro.request.url}`);
 
 const voting = await db.query("SELECT * FROM votings WHERE id = $1", [id]);
 

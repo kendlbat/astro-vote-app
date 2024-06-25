@@ -1,3 +1,11 @@
 ---
-return Astro.redirect("/api/auth/signin");
+const returnUrl = Astro.url.searchParams.get("r") || "/";
 ---
+
+<script data-returnurl={returnUrl}>
+    const { signIn } = await import("auth-astro/client");
+
+    signIn("azure-ad", {
+        callbackUrl: this.dataset.returnurl,
+    });
+</script>

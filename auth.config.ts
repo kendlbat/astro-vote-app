@@ -7,6 +7,8 @@ export default defineConfig({
             clientId: import.meta.env.AUTH_MICROSOFT_ENTRA_ID_CLIENT_ID,
             clientSecret: import.meta.env.AUTH_MICROSOFT_ENTRA_ID_CLIENT_SECRET,
             tenantId: import.meta.env.AUTH_MICROSOFT_ENTRA_ID_TENANT_ID,
+            redirectProxyUrl: import.meta.env
+                .AUTH_MICROSOFT_ENTRA_ID_REDIRECT_PROXY_URL,
         }),
     ],
     debug: false,

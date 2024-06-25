@@ -8,7 +8,7 @@ const session = await getSession(Astro.request);
 
 const userid = session?.user?.email;
 
-if (!userid) return Astro.redirect("/login");
+if (!userid) return Astro.redirect(`/login?r=${Astro.request.url}`);
 ---
 
 <Layout title="Vote Dashboard">
