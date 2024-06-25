@@ -14,8 +14,11 @@ import { SignIn } from "auth-astro/components";
             document.querySelector("body")!!.addEventListener("click", () =>
                 signIn("azure-ad", {
                     callbackUrl:
-                        // @ts-ignore
-                        document.querySelector("#returnUrl")?.value || "/",
+                        (
+                            document.querySelector(
+                                "#returnUrl"
+                            ) as HTMLInputElement
+                        )?.value || "/",
                 })
             );
         </script>
