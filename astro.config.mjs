@@ -7,12 +7,14 @@ import react from "@astrojs/react";
 
 // https://astro.build/config
 export default defineConfig({
-  output: "server",
-  integrations: [tailwind(), auth(), react()],
-  adapter: node({
-    mode: "standalone"
-  }),
-  experimental: {
-    actions: true
-  }
+    output: "server",
+    integrations: [tailwind(), auth(), react()],
+    adapter: node({
+        mode: "standalone",
+    }),
+    experimental: {
+        actions: true,
+    },
+    // origin for proxy
+    site: "https://vote.kendlbat.dev",
 });
