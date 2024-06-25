@@ -10,5 +10,6 @@ export default defineConfig({
             tenantId: import.meta.env.AUTH_MICROSOFT_ENTRA_ID_TENANT_ID,
         }),
     ],
-    debug: true,
+    debug: false,
+    redirectProxyUrl: import.meta.env.AUTH_REDIRECT_PROXY_URL,
 });
