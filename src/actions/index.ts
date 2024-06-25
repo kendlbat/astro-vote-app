@@ -12,7 +12,7 @@ export const server = {
         input: z.object({ option: z.number() }),
         handler: async ({ option }, ctx) => {
             const session = await getSession(ctx.request);
-            const userid = session?.user?.id;
+            const userid = session?.user?.email;
             if (!userid) return new Response("Unauthorized", { status: 401 });
 
             console.log(option);
