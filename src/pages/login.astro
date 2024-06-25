@@ -1,12 +1,14 @@
 ---
 const returnUrl = Astro.url.searchParams.get("r") || "/";
+
+import { SignIn } from "auth-astro/components";
 ---
 
-<script data-returnurl={returnUrl}>
-    (async () => {
-        const { signIn } = await import("auth-astro/client");
-        signIn("azure-ad", {
-            callbackUrl: this.dataset.returnurl,
-        });
-    })();
-</script>
+<SignIn
+    provider="azure-ad"
+    options={{
+        callbackUrl: returnUrl,
+    }}
+>
+    <button class="btn">Sign in</button></SignIn
+>
