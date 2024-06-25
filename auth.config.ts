@@ -11,6 +11,6 @@ export default defineConfig({
         }),
     ],
     debug: false,
-    redirectProxyUrl: import.meta.env.AUTH_REDIRECT_PROXY_URL,
     trustHost: true,
+    secret: import.meta.env.AUTH_SECRET,
 });
