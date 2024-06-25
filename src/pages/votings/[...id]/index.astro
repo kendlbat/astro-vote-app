@@ -10,7 +10,7 @@ const { id } = Astro.params;
 const session = await getSession(Astro.request);
 const userid = session?.user?.email;
 
-if (!userid) return Astro.redirect(`/login?r=${Astro.request.url}`);
+if (!userid) return Astro.redirect(`/login?r=${Astro.url.pathname}`);
 
 const voting = (await db.query("SELECT * FROM votings WHERE id = $1", [id]))
     .rows[0];

@@ -11,7 +11,7 @@ import { OptionsContainer } from "../components/OptionsContainer";
 
 const session = await getSession(Astro.request);
 
-if (!session) return Astro.redirect(`/login?r=${Astro.request.url}`);
+if (!session) return Astro.redirect(`/login?r=${Astro.url.pathname}`);
 
 async function postLogic() {
     // Validate form using zod

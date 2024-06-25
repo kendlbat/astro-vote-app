@@ -4,11 +4,15 @@ const returnUrl = Astro.url.searchParams.get("r") || "/";
 import { SignIn } from "auth-astro/components";
 ---
 
-<SignIn
-    provider="azure-ad"
-    options={{
-        callbackUrl: returnUrl,
-    }}
->
-    <button class="btn">Sign in</button></SignIn
->
+<html>
+    <body>
+        <button id="login">Login</button>
+
+        <script>
+            const { signIn, signOut } = await import("auth-astro/client");
+            document
+                .querySelector("body")!!
+                .addEventListener("click", () => signIn("azure-ad"));
+        </script>
+    </body>
+</html>
